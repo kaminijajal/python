@@ -1,0 +1,5 @@
+f = open("str1.txt",'a')
+# f.writelines(["Wlcome\n","Python\n"])
+data = (f.tell())
+print(data)
+f.close()

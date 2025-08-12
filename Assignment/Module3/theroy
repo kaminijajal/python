@@ -1,0 +1,48 @@
+1) Introduction to the print() function in Python
+-> The print() function in Python is one of the most commonly used built-in functions. It is used to display output (text, numbers, variables, etc.) on the console (screen).
+2) Formatting outputs using f-strings and format().
+->f-string example:
+    name = "kamini"
+    print(f"My name is {name}")
+->format exmple:
+    name = "kamini"
+    print("My name is {}".format(name))
+3) Converting user input into different data types (e.g., int, float, etc.).
+-> 
+    a = int(input("Enter age : "))
+    print(a)
+
+    b  = float(input("Enter pointing number : "))
+    print(b) 
+4) Opening files in different modes ('r', 'w', 'a', 'r+', 'w+').
+-> 'r' -Opens the file for reading.
+       -File must exist, or it will raise a FileNotFoundError.
+       -Cursor starts at the beginning of the file.
+   'w' -Opens the file for writing.
+       -If the file exists, it overwrites the content.
+       -If the file does not exist, it creates a new file.   
+   'a' -Opens the file for appending.
+       -If the file does not exist, it creates a new file.
+       -Data is added at the end of the file.
+   'r+' -Opens the file for both reading and writing.
+        -File must exist.
+        -Does not truncate the file.
+   'w+  -Opens the file for both writing and reading.
+        -If the file exists, it is overwritten.
+        -If it does not exist, a new file is created.
+5) Using the open() function to create and access files.
+->In Python, the open() function is used to create, open, and access files. It allows you to perform different file operations like reading, writing, or appending data.
+-> 'r','w','a','r+','w+','a+' etc mode in open() are use.
+6) Closing files using close().
+-> In Python, after working with a file using the open() function, it is important to close the file using the close() method. This ensures that system resources are released and all data is properly written (in case of write mode).
+->It flushes the internal buffer (important for writing).
+->Frees up system resources.
+->Prevents file corruption or data loss
+->Use with() auto-closes the file.
+7) Reading from a file using read(), readline(), readlines().
+->read() Reads the entire file as a single string.
+->readline() Reads only one line at a time from the file.
+->readlines() Reads all lines into a list, where each line is a string element.
+8) Writing to a file using write() and writelines()
+->write() Writes a single string to the file.
+->writelines() Writes a list of strings to the file without adding newlines automatically.
