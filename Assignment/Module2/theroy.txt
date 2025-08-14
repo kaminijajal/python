@@ -203,6 +203,41 @@ print(color[::2])
     print(dict)
     print(dict[3])
     print(dict.get(3))
+
+    dict[6] = "Ds"
+    dict[3] = "abc"
+    del dict[6]
+14) Dictionary methods like keys(), values(), and items().
+-> dict = {1:"php",2:"Python",3:"java",4:"node",5:"Rect"}
     print(dict.keys())
     print(dict.values())
-    print(dict.item())
+    print(dict.items())
+15) Iterating over a dictionary using loops.
+-> dict = {1:"php",2:"Python",3:"java",4:"node",5:"Rect"}
+
+    for i in dict:
+        print(i)
+
+    for i in dict.keys():
+        print(i)
+
+    for i in dict.values():
+        print(i)
+
+    for i,j in dict.items():
+        print(i)
+        print(j)
+16) Merging two lists into a dictionary using loops or zip()
+17) Counting occurrences of characters in a string using dictionaries
+->  s = "Hello Python"
+    count = {}
+
+    for i in s:
+        if count.get(i) is None:
+            count.update({i:1})
+        else:
+            k = count.get(i)
+            k+=1
+            count.update({i:k})
+    print(count)
+   
