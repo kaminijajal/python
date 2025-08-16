@@ -241,3 +241,141 @@ print(color[::2])
             count.update({i:k})
     print(count)
    
+18) Defining functions in Python
+-> In Python, functions are reusable blocks of code that perform a specific task. They help 
+    make your code more organized, modular, and easier to maintain.
+
+    def function_name(parameters):
+    
+    # Code to execute
+    return value
+-> def – Keyword to define a function.
+   function_name – The name you give to your function.
+   parameters – Values you pass into the function.
+   return – Sends a value back to the caller.
+->  def greet():
+        print("Hello, welcome to Python!")
+    greet()
+-> function with parameters
+    def greet_user(name):
+        print(f"Hello, {name}!")
+    greet_user("Kamini")
+-> function with return value
+    def add(a, b):
+        return a + b
+
+    result = add(5, 3)
+    print("Sum:", result)
+-> function with defalut parameter
+    def greet(name="Guest"):
+        print(f"Hello, {name}!")
+    greet()          
+    greet("Kamini")   
+19) Different types of functions: with/without parameters, with/without return values
+-> without parameter without returnvalue
+    def greet():
+        print("Hello! Welcome to Python.")
+    greet()
+-> with parameter without return value
+    def greet_user(name):
+        print(f"Hello, {name}!")
+    greet_user("Kamini")
+-> with parameter with return value
+    def add_numbers(a, b):
+        return a + b
+    result = add_numbers(5, 3)  
+    print("Sum:", result)
+-> without parameter with return value
+    def get_pi():
+        return 3.1415   
+    pi_value = get_pi()
+    print("Value of PI:", pi_value)
+20) Anonymous functions (lambda functions).
+-> Anonymous functions in Python, also called lambda 
+   functions, are small, nameless functions defined using the lambda keyword.
+-> lambda → keyword to define an anonymous function.
+-> arguments → parameters (can be zero or more).
+-> expression → a single expression whose result is returned automatically.
+-> syntax: lambda arguments: expression
+->  z = lambda x,y : x-y
+    print(z(20,10))
+-> using map()
+    l = [2,4,6]
+    w = [1,3,5]
+    r = map(lambda a,b : 2*(a+b),l,w)
+    print(list(r))
+-> using filter()
+    n = [1, 2, 3, 4, 5]
+    evens = list(filter(lambda x: x % 2 == 0, n))
+    print(evens)  
+21) Introduction to Python modules and importing modules
+-> A module in Python is just a file that contains Python code (functions, variables, or classes).
+-> It helps organize code and makes it reusable.
+-> Example: A file named math.py is a module.
+-> type of modules
+    Built-in modules → Already provided by Python.
+    Example: math, random, os.
+
+    User-defined modules → Created by the programmer.
+    Example: A file mymodule.py with custom functions.
+-> You can use modules by importing them into your program.
+-> A module = Python file with reusable code.
+-> Use import to bring functions/classes/variables from modules into your program.
+22) Standard library modules: math, random
+-> The Python Standard Library has many built-in modules. 
+   Two of the commonly used ones are math and random
+->The math module provides mathematical functions.
+->You need to import it before using:
+math module
+    import math
+
+    print(math.sqrt(25))       
+    print(math.factorial(5))   
+    print(math.pi)             
+    print(math.pow(2, 3))      
+    print(math.ceil(4.2))      
+    print(math.floor(4.8))     
+
+random module
+-> The random module is used to generate random numbers.
+
+    import random
+
+    print(random.randint(1, 10))     
+    print(random.random())           
+    print(random.uniform(1, 5))      
+    print(random.choice([10, 20, 30, 40]))
+    print(random.shuffle([1, 2, 3, 4, 5]))  
+
+-> math → for mathematical calculations
+-> random → for random number generation / selections
+23) Creating custom modules.
+-> Python, a custom module is simply a .py file that contains Python code
+    (functions, classes, or variables) that you can import and reuse in other programs.
+-> Create custom module
+    # mymodule.py
+    def greet(name):
+        return f"Hello, {name}!"
+
+    def add(a, b):
+        return a + b
+
+    pi = 3.14159
+-> use costom module in another file
+    # main.py
+    import mymodule   # importing the custom module
+
+    print(mymodule.greet("Kamini"))
+    print("Sum:", mymodule.add(10, 5))
+    print("Value of pi:", mymodule.pi)
+-> import spacific variables/functions
+    from mymodule import greet, pi
+
+    print(greet("User"))
+    print("Pi is", pi)
+-> rename function or module while import file 
+    import mymodule as mm
+
+    print(mm.add(3, 4))   # using alias
+
+
