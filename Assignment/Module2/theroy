@@ -349,6 +349,7 @@ random module
 
 -> math → for mathematical calculations
 -> random → for random number generation / selections
+
 23) Creating custom modules.
 -> Python, a custom module is simply a .py file that contains Python code
     (functions, classes, or variables) that you can import and reuse in other programs.

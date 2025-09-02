@@ -46,3 +46,236 @@
 8) Writing to a file using write() and writelines()
 ->write() Writes a single string to the file.
 ->writelines() Writes a list of strings to the file without adding newlines automatically.
+9) Introduction to exceptions and how to handle them using try, except, and finally.
+-> Exceptions are errors that occur during the execution of a program.
+-> When an exception occurs, the normal flow of the program is interrupted.
+->Common examples:
+    ZeroDivisionError (dividing by zero)
+    ValueError (invalid value)
+    FileNotFoundError (missing file)
+    TypeError (wrong data type)
+-> try → place risky code.
+-> except → handle errors gracefully.
+-> finally → cleanup tasks (always runs).
+10) Understanding multiple exceptions and custom exceptions.
+-> Multiple Exceptions
+
+try:
+    num = int("abc")      # This will raise ValueError
+    result = 10 / 0       # This would raise ZeroDivisionError
+except ValueError:
+    print("ValueError: Invalid conversion to integer")
+except ZeroDivisionError:
+    print("ZeroDivisionError: Cannot divide by zero")
+
+-> Custom Exceptions
+
+class NegativeNumberError(Exception):
+    pass
+
+def check_number(num):
+    if num < 0:
+        raise NegativeNumberError("Negative numbers are not allowed")
+    else:
+        print("Valid number:", num)
+
+try:
+    check_number(-5)
+except NegativeNumberError as e:
+    print("Custom Exception:", e)
+
+-> Multiple exceptions = handling different built-in errors.
+-> Custom exceptions = making your own error type.
+11) Understanding the concepts of classes, objects, attributes, and methods in Python
+-> class
+    -A class is like a blueprint for creating objects.
+    -It defines what attributes (data) and methods (functions) an object will have.
+-> object
+    -An object is a real-world instance created from a class.
+    -Think of a class as a design, and objects as actual products made from that design.
+-> attributes
+    -Attributes are variables inside a class that store data about the object.
+    -Each object can have its own values for these attributes.
+-> method
+    -Methods are functions defined inside a class that describe what an object can do.
+
+-> Example
+    class Car:
+    def __init__(self, brand, color):
+        self.brand = brand   
+        self.color = color   
+
+    def drive(self):         
+        print(f"{self.color} {self.brand} is driving")
+
+car1 = Car("Toyota", "Red")
+car2 = Car("BMW", "Black")
+
+print(car1.brand)  
+car1.drive()        
+print(car2.color)  
+car2.drive()       
+
+12) Difference between local and global variables.
+-> Local Variable
+    -Declared inside a function.
+    -Can be used only within that function.
+    -Created when the function starts, destroyed when it ends.
+-> Global Variable
+    -Declared outside all functions.
+    -Can be used anywhere in the program.
+    -Exists as long as the program runs.
+-> Local → limited to a function.
+-> Global → accessible across the program.
+13) Single, Multilevel, Multiple, Hierarchical, and Hybrid inheritance in Python.
+-> Inheritance in Python is when one class (child/derived) can use properties & methods of another class (parent/base).
+-> Single Inheritance
+    One child class inherits from one parent class.
+    Example
+    class Parent:
+    def show(self):
+        print("This is Parent class")
+    
+    class Child(Parent): 
+    def display(self):
+        print("This is Child class")
+
+    c = Child()
+    c.show()    
+    c.display()
+-> Multilevel Inheritance
+    A class is derived from another derived class (chain).
+    Example
+    class GrandParent:
+        def show(self):
+            print("This is GrandParent class")
+
+    class Parent(GrandParent):  
+        def display(self):
+            print("This is Parent class")
+
+    class Child(Parent):  
+        def info(self):
+            print("This is Child class")
+
+    c = Child()
+    c.show()    
+    c.display()  
+    c.info()     
+-> Multiple Inheritance
+    A child class inherits from more than one parent.
+    Example
+    class Father:
+        def skill(self):
+            print("Father: Knows driving")
+
+    class Mother:
+        def talent(self):
+            print("Mother: Knows cooking")
+
+    class Child(Father, Mother):  
+        def hobby(self):
+            print("Child: Plays football")
+
+    c = Child()
+    c.skill()
+    c.talent()
+    c.hobby()
+-> Hierarchical Inheritance
+    Multiple child classes inherit from the same parent. 
+    Example
+    class Parent:
+        def show(self):
+            print("This is Parent class")
+
+    class Child1(Parent):
+        def display(self):
+            print("This is Child1 class")
+
+    class Child2(Parent):
+        def info(self):
+            print("This is Child2 class")
+
+    c1 = Child1()
+    c1.show()
+    c1.display()
+
+    c2 = Child2()
+    c2.show()
+    c2.info()
+-> Hybrid Inheritance
+    Combination of two or more types of inheritance.
+    Example: Combination of Multiple + Hierarchical
+    class A:
+        def show(self):
+            print("Class A")
+
+    class B(A):  
+        def display(self):
+            print("Class B")
+
+    class C(A):  
+        def info(self):
+            print("Class C")
+
+    class D(B, C):  
+        def extra(self):
+            print("Class D")
+
+    d = D()
+    d.show()      
+    d.display()   
+    d.info()      
+    d.extra()    
+14) Method overloading: defining multiple methods with the same name but different
+parameters.
+-> Defining multiple methods with the same name but different parameters in a class. Python achieves it using default arguments or *args.
+
+Example
+
+from multipledispatch import dispatch
+
+class Calc:
+
+    @dispatch(int,int)
+    def add(self,a,b):
+        print(f"Addition is {a+b}")
+    
+     @dispatch(int,int,int)
+     def add(self,a,b,c):
+         print(f"Addition is`` {a+b+c}")
+
+     @dispatch(float,int)
+     def add(self,a,b):
+         print(f"Addition is {a+b}")
+
+     def add(self,*a):
+         sum=0
+         for i in a:
+             sum+=i
+         print(f"Adddtion is : {sum}")
+
+
+c = Calc()
+c.add(10,20)
+c.add(10,20,30)
+c.add(10.23,45)
+
+15) Method overriding: redefining a parent class method in the child class.
+-> Method Overriding in Python means:
+-> When a child class provides its own implementation of a method that is already defined in   the parent class.
+-> The method name must be the same in both parent and child classes.
+-> It is mainly used in inheritance to achieve runtime polymorphism.
+
+Example
+    class Parent:
+        def display(self):
+            print("This is the Parent class method.")
+
+    class Child(Parent):
+        def display(self):
+            print("This is the Child class method.")
+
+    obj = Child()
+    obj.display()   
+-> Here, display() is overridden in the Child class, so when called from a child object, the child’s version executes.
