@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from crudapp.models import * 
 from django.contrib.auth.models import User
-from django.contrib.auth import login,logout,aauthenticate
+from django.contrib.auth import login,logout,authenticate
 
 # Create your views here.
 def index(request):
@@ -76,6 +76,13 @@ def user_login(requset):
         uname = data.get("uname")
         password = data.get("pass")
 
-        au
+        user = authenticate(username=uname,password=password)
+        if user is not None:
+            login(requset,user)
+            return render(requset,'home.html')
+        else:
+            return render(requset,'login.html',{'msg':"Invalid credentails"})
+
+   
 
     return render(requset,'login.html')

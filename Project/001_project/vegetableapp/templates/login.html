@@ -1,0 +1,56 @@
+{%extends 'base.html'%}
+{%block title%}Ogani | Login{%endblock%}
+{%block content%}
+
+
+
+<!-- From -->
+  <div class="container"> 
+    <div class="row">
+      <div class="col-6">
+    
+      <div >
+        <h2>Login From</h2><br>
+        <p style="color:red;">{{ err }}</p>
+        <form action="{% url 'login' %}" method="POST"  class="form grid">
+          {% csrf_token %}
+          <input type="text" placeholder="Enter Username" name="username" class="form-control">
+          <br>
+          <br>
+          <input type="password" placeholder="Enter Password" name="password" class="form-control">
+          <br>
+          <br>
+          <input type="submit" class="primary-btn">
+        </form>
+      </div></div>
+<div class="col-6">
+      <div>
+        <h2>Regestration From</h2>
+        <p style="color:green;">{{ msg }}</p>
+        <p style="color:red;">{{ rerr }}</p>
+        <form action="{% url 'register' %}" method="POST"  class="form grid">
+          {% csrf_token %}
+          
+          <input type="text" placeholder="Enter Username" name="username">
+          <br>
+          <br>
+          <input type="text" placeholder="Enter Email" name="email">
+          <br>
+          <br>
+          <input type="password" placeholder="Enter Password"   name="password">
+          <br>
+          <br>
+          <input type="password" placeholder="Enter Confirm Password" name="cpassword">
+          <br>
+          <br>
+          <input type="submit" class="primary-btn">
+        </form>
+      </div>
+</div>
+</div>
+  </div> 
+
+
+
+
+{%endblock%}

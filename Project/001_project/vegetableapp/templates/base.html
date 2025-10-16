@@ -54,7 +54,7 @@
                 </ul>
             </div>
             <div class="header__top__right__auth">
-                <a href="#"><i class="fa fa-user"></i> Login</a>
+                <a href="#" class="btn btn-success"><i class="fa fa-user"></i> Login</a>
             </div>
         </div>
         <nav class="humberger__menu__nav mobile-menu">
@@ -120,7 +120,7 @@
                                 </ul>
                             </div>
                             <div class="header__top__right__auth">
-                                <a href="#"><i class="fa fa-user"></i> Login</a>
+                                <a href="#" class="btn btn-success"><i class="fa fa-user"></i> Login</a>
                             </div>
                         </div>
                     </div>
@@ -129,12 +129,12 @@
         </div>
         <div class="container">
             <div class="row">
-                <div class="col-lg-3">
+                <div class="col-lg-2">
                     <div class="header__logo">
                         <a href="./index.html"><img src="static/assest/img/logo.png" alt=""></a>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-8">
                     <nav class="header__menu">
                         <ul>
                             <li class="active"><a href="{%url 'index'%}">Home</a></li>
@@ -149,10 +149,16 @@
                             </li>
                             <li><a href="{%url 'blog'%}">Blog</a></li>
                             <li><a href="{%url 'contact'%}">Contact</a></li>
+                            {%if user.is_authenticated%}
+                            <li><a href="{%url 'logout'%}">Logout</a></li>
+                             <li><a href="{%url 'logout'%}">Welcome,{{user}}</a></li>
+                            {%else%}
+                            <li><a href="{%url 'login'%}">Login</a></li>
                         </ul>
+                        {%endif%}
                     </nav>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-2">
                     <div class="header__cart">
                         <ul>
                             <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>

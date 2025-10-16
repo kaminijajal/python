@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" 
+    crossorigin="anonymous"></script>
+
+    <script>
+
+        $(document).ready(function(){
+            // alert("hello")
+            countries()
+
+        })
+
+        function countries(){
+            $.get('countries',{},function(rt){
+                // alert(rt.data)
+                options = "<option>--Select Country--</option>"
+                rt.data.map(ele=>{
+                    // console.log(ele.id);
+                    // console.log(ele.name);
+                    options+=`<option value='${ele.id}'>${ele.name}</option>`
+                })
+                // alert(options)
+                $('#country').html(options)
+            })
+        }
+
+        function states(cid){
+            // alert(cid)
+            $.get("states",{cid},function(rt){
+                options = "<option>--Select State--</option>"
+                rt.data.map(ele=>{
+                    options+=`<option value='${ele.id}'>${ele.name}</option>`
+                })
+                $('#state').html(options)
+            })
+        }
+        
+          function city(sid){
+            // alert(cid)
+            $.get("cities",{sid},function(rt){
+                options = "<option>--Select City--</option>"
+                rt.data.map(ele=>{
+                    options+=`<option value='${ele.id}'>${ele.name}</option>`
+                })
+                $('#city').html(options)
+            })
+        }
+
+        function search(){
+            const data =document.getElementById("search").value
+            // alert(data)
+            $.get('search',{data},function(rt){
+                // alert(rt)
+                // console.log(rt.data[0].name)
+                row = "<ul>"
+                rt.data.map(ele=>{
+                    row+="<li>" + ele.name + "</li>"
+                })
+                row+="</ul>"
+                // alert(row)
+                $("77#tdata").html(row)
+            })
+        }
+    </script>
+
+</head>
+<body>
+   <input type="text" id="search" onkeyup="search()">
+   <!-- <button onclick="search()">Click here</button> -->
+   <div id="tdata"></div>
+
+   <hr>
+   <select name="country" id="country" onchange="states(value)">
+        <option value="0">-----select Country-----</option>
+
+   </select>
+
+   <select name="state" id="state" onchange="city(value)">
+        <option value="0">-----Select state-----</option>
+   </select>
+
+   <select name="city" id="city">
+        <option value="0">-----Select City-----</option>
+   </select>
+</body>
+</html>
