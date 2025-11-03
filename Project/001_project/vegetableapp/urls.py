@@ -13,12 +13,17 @@ urlpatterns = [
     path('shopdetails',shope_details,name='shop-details'),
     path('shopgrid',shop_grid,name='shop-grid'),
     path('shopingcart',shopping_cart,name='shoping-cart'),
+    path('allcategories',allcategories,name='allcategories'),
+    path("allproducts",allproducts,name="allproducts"),
 
     path("register",register,name="register"),
     path("login",user_login,name="login"),
     path("logout",user_logout,name="logout"),
 
     path("addtocart",add_to_cart,name="addtocart"),
+    path("deletecart",deletecart,name="deletecart"),
+    path('changeqty',changeqty,name="changeqty")
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

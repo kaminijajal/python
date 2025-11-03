@@ -1,29 +1,29 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from vegetableapp.models import *
 
+from django.http import JsonResponse
 
 # Create your views here.
 
 
 def index(request):
+    return render(request,'index.html')
+
+def allcategories(request):
     categories = Category.objects.all()
-    products = Product.objects.all()
-    try:
-        cid = int(request.GET['cid'])
-        # print(cid)
-        # categories = Category.objects.all()
-        if cid!= 0:
-            products = Product.objects.filter(category_id=cid)
-        else:
-            products = Product.objects.all()
-        return render(request,'index.html',{"categories":categories,
-                    "products": products})
-    except Exception as e:
-        return render(request,'index.html',{"categories":categories,
-                    "products": products})
+    return JsonResponse({"data":list(categories.values())})
+
+def allproducts(request):
+    cid = request.GET['catid']
+    print(cid)
+    if int(cid)==0:
+        products = Product.objects.all()
+    else:
+        products = Product.objects.filter(category_id=cid)
+    return JsonResponse({"data":list(products.values())})
 
 def blog_details(request):
     return render(request,'blog-details.html')
@@ -49,7 +49,8 @@ def shop_grid(request):
 
 @login_required(login_url="login")
 def shopping_cart(request):
-    return render(request,'shoping-cart.html')
+    cartdata = Cart.objects.filter(user=request.user)
+    return render(request,'shoping-cart.html',{"cdata":cartdata})
 
 
 
@@ -84,9 +85,38 @@ def user_logout(request):
     logout(request)
     return redirect("index")
 
-@login_required(login_url="login")
+
 def add_to_cart(request):
-    pid = request.GET['pid']
-    product = Product.objects.get(id=pid)
-    Cart.objects.create(product=product,user=request.user,qty=1)
-    return redirect('index')
+    if not request.user.is_anonymous:
+        pid = request.GET['pid']
+        product = Product.objects.get(id=pid)
+
+
+        cdata = Cart.objects.filter(product=product,user=request.user)
+        if len(cdata)>0:
+            cdata[0].qty = cdata[0].qty+1
+            cdata[0].save()
+            return HttpResponse("Product alredy exist in cart")
+        else:   
+            Cart.objects.create(product=product,user=request.user,qty=1)
+            return HttpResponse('Product added in cart...........')
+    else:
+        return HttpResponse(request.user)
+
+def deletecart(request):
+    cid = request.GET['cid']
+    cart = Cart.objects.get(pk=cid)
+    cart.delete()
+    return HttpResponse("cart Deleted.........")
+
+def changeqty(request):
+    cartid = request.GET['cartid']
+    qty = request.GET['qty']
+
+    cart = Cart.objects.get(pk=cartid)
+    if int(qty)<=0:
+        cart.delete()
+    else:
+        cart.qty = qty
+        cart.save()
+    return HttpResponse("cart updated.........")

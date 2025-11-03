@@ -90,72 +90,32 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                 {%for cart in cdata%}
                                 <tr>
                                     <td class="shoping__cart__item">
-                                        <img src="static/assest/img/cart/cart-1.jpg" alt="">
-                                        <h5>Vegetable’s Package</h5>
+                                        <img src="media/{{cart.product.image}}" alt="" width="100" height="100">
+                                        <h5>{{cart.product.name}}</h5>
                                     </td>
                                     <td class="shoping__cart__price">
-                                        $55.00
+                                        ${{cart.product.peice}}
                                     </td>
                                     <td class="shoping__cart__quantity">
                                         <div class="quantity">
                                             <div class="pro-qty">
-                                                <input type="text" value="1">
+                                                <input type="text" value="{{cart.qty}}" 
+                                                onchange="changeqty(value,'{{cart.id}}')">
                                             </div>
                                         </div>
                                     </td>
                                     <td class="shoping__cart__total">
-                                        $110.00
+                                        ${{cart.subtotal}}
                                     </td>
                                     <td class="shoping__cart__item__close">
-                                        <span class="icon_close"></span>
+                                        <span class="icon_close" 
+                                        onclick="deletecart('{{cart.id}}')"></span>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td class="shoping__cart__item">
-                                        <img src="static/assest/img/cart/cart-2.jpg" alt="">
-                                        <h5>Fresh Garden Vegetable</h5>
-                                    </td>
-                                    <td class="shoping__cart__price">
-                                        $39.00
-                                    </td>
-                                    <td class="shoping__cart__quantity">
-                                        <div class="quantity">
-                                            <div class="pro-qty">
-                                                <input type="text" value="1">
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="shoping__cart__total">
-                                        $39.99
-                                    </td>
-                                    <td class="shoping__cart__item__close">
-                                        <span class="icon_close"></span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="shoping__cart__item">
-                                        <img src="static/assest/img/cart/cart-3.jpg" alt="">
-                                        <h5>Organic Bananas</h5>
-                                    </td>
-                                    <td class="shoping__cart__price">
-                                        $69.00
-                                    </td>
-                                    <td class="shoping__cart__quantity">
-                                        <div class="quantity">
-                                            <div class="pro-qty">
-                                                <input type="text" value="1">
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="shoping__cart__total">
-                                        $69.99
-                                    </td>
-                                    <td class="shoping__cart__item__close">
-                                        <span class="icon_close"></span>
-                                    </td>
-                                </tr>
+                                {%endfor%}
                             </tbody>
                         </table>
                     </div>
@@ -194,5 +154,19 @@
         </div>
     </section>
     <!-- Shoping Cart Section End -->
+<script>
+    function deletecart(cid){
+        // alert(cid)
+        $.get('deletecart',{cid},function(rt){
+            location.reload()
+        })
+    }
 
+    function changeqty(qty,cartid){
+        // alert(qty+" "+cid)
+        $.get('changeqty',{cartid,qty},function(rt){
+            location.reload()
+        })
+    }
+</script>
  {%endblock%}

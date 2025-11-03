@@ -19,8 +19,13 @@ class Product(models.Model):
     description=models.TextField()
     image = models.ImageField(upload_to="prod_img")
 
+    def __str__(self):
+        return self.name
+
 class Cart(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     qty = models.IntegerField()
 
+    def subtotal(self):
+        return self.product.peice*self.qty
