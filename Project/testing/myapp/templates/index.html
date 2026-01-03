@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Razorpay</title>
+</head>
+<body>
+
+<input type="number" id="amt" placeholder="Enter amount">
+<button id="rzp-button1">Pay Now</button>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+document.getElementById("rzp-button1").onclick = function(e){
+    e.preventDefault();
+
+    let amt = document.getElementById("amt").value;
+    if(!amt || amt <= 0){
+        alert("Enter valid amount");
+        return;
+    }
+
+    fetch(`/payment?amt=${amt}`)
+    .then(res => res.json())
+    .then(order => {
+
+        let options = {
+            key: "rzp_test_RZXKBwmotI55aB",
+            amount: order.amount,
+            currency: "INR",
+            name: "Shree",
+            description: "Test Transaction",
+            order_id: order.id,
+
+            method: {
+                card: true,
+                upi: true,
+                netbanking: true,
+                wallet: true
+            },
+
+            handler: function (response) {
+                alert("Payment Successful!");
+                console.log(response);
+            },
+
+            theme: { color: "#3399cc" }
+        };
+
+        let rzp = new Razorpay(options);
+        rzp.open();
+    })
+    .catch(() => alert("Payment init failed"));
+}
+</script>
+
+</body>
+</html>

@@ -12,12 +12,10 @@
                             <span>All departments</span>
                         </div>
                         <ul>
-                            <li><a href="#">Fresh Meat</a></li>
                             <li><a href="#">Vegetables</a></li>
                             <li><a href="#">Fruit & Nut Gifts</a></li>
                             <li><a href="#">Fresh Berries</a></li>
                             <li><a href="#">Ocean Foods</a></li>
-                            <li><a href="#">Butter & Eggs</a></li>
                             <li><a href="#">Fastfood</a></li>
                             <li><a href="#">Fresh Onion</a></li>
                             <li><a href="#">Papayaya & Crisps</a></li>
@@ -83,12 +81,12 @@
                     "section-title">
                         <h2>Featured Product</h2>
                     </div>
-                    <div class="featured__controls">
+                    <div class="featured__controls" id="catdata">
                         <ul>
                             <li class="active" data-filter="*"><a href="{%url 'index'%}?cid=0">All</a></li>
-                            <li data-filter=".oranges">Oranges</li>
-                            <li data-filter=".fresh-meat">Fresh Meat</li>
-                            <li data-filter=".vegetables">Vegetables</li>
+                            <li data-filter=".Fruits">Fruits</li>
+                            <li data-filter=".Vegetables">Vegetables</li>
+                            <li data-filter=".Vegetables">Cold-Drinks</li>
                             <li data-filter=".fastfood">Fastfood</li>
                         </ul>
                     </div>
@@ -97,8 +95,8 @@
             
             <div class="row featured__filter" id="prodata" >
               
-                
-            </div>
+            
+
             
         </div>
     </section>
@@ -420,6 +418,7 @@
                             </a>
                         </div>
                     </div>`
+                    
             })
             // alert(row)
             $("#catdata").html(row)

@@ -3,8 +3,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from vegetableapp.models import *
-
+import razorpay
 from django.http import JsonResponse
+from datetime import datetime
+from django.core.mail import send_mail
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
 
 # Create your views here.
 
@@ -33,6 +37,7 @@ def blog(request):
 
 @login_required(login_url="login")
 def checkout(request):
+    # addressdata = Address.objects.filter(user=request.User)
     return render(request,'checkout.html')
 
 def contact(request):
@@ -50,7 +55,10 @@ def shop_grid(request):
 @login_required(login_url="login")
 def shopping_cart(request):
     cartdata = Cart.objects.filter(user=request.user)
-    return render(request,'shoping-cart.html',{"cdata":cartdata})
+    sum = 0
+    for i in cartdata:
+        sum+=i.subtotal()
+    return render(request,'shoping-cart.html',{"cdata":cartdata,"total":int(sum)})
 
 
 
@@ -120,3 +128,63 @@ def changeqty(request):
         cart.qty = qty
         cart.save()
     return HttpResponse("cart updated.........")
+
+
+def payment(request):
+
+    orders = UserOrder.objects.all()
+    rid = len(orders)+1
+    amt = int(request.GET['amt'])
+    client = razorpay.Client(auth=("rzp_test_RZXKBwmotI55aB", "SIufDu3mGeURc3zbcVJSo2fQ"))
+     
+    data = { "amount": amt*100, "currency": "INR" ,"receipt":f"order_rcptid_{rid}"   }
+    payment = client.order.create(data=data) # Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    print(payment)
+    return JsonResponse(payment)
+
+
+def makeorder(request):
+    rid = request.GET['rid']
+    payid = request.GET['payid']
+    oid = request.GET['oid']
+    total = request.GET['total']
+    print(rid,payid,oid)
+    order = UserOrder.objects.create(
+        user=request.user,
+        paymentid = payid,
+        total = int(total)/100,
+        receiptid=rid,
+        orderid=oid,
+        date = datetime.now()
+    )
+
+    cartdata = Cart.objects.filter(user= request.user)
+    for cart in cartdata:
+        OrderDetails.objects.create(order=order,product=cart.product,qty=cart.qty,
+        price=cart.product.peice)
+        cart.delete()
+
+    subject = "Oreder Confimation"
+    message = "Your order is confirmed !!!"
+    html_content="<h1>hello</h1>"
+    context = {}
+
+    try:
+        # send_mail(subject,message,settings.EMAIL_HOST_USER,[emailto])
+        msg = EmailMultiAlternatives(subject,message,settings.EMAIL_HOST_USER,[request.user.email])
+        msg.attach_alternative(html_content,"text/html")
+        msg.send()
+        context['result']  = 'Email sent successfully'
+    except Exception as e:
+        context['result'] = f'Error sending email: {e}'
+        print(e)
+    return HttpResponse("order successfully places ....")
+
+# def cart_total(request):
+#     total = 0
+#     cart = request.session.get('cart', {})
+
+#     for item in cart.values():
+#         total += int(item['peice']) * int(item['qty'])
+
+#     return JsonResponse({'total': total})

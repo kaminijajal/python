@@ -144,10 +144,10 @@
                     <div class="shoping__checkout">
                         <h5>Cart Total</h5>
                         <ul>
-                            <li>Subtotal <span>$454.98</span></li>
-                            <li>Total <span>$454.98</span></li>
+                            <li>Subtotal <span>${{total}}</span></li>
+                            <li>Total <span>$<span id="amt">{{total}}</span></span></li>
                         </ul>
-                        <a href="#" class="primary-btn">PROCEED TO CHECKOUT</a>
+                        <a id="pay" class="primary-btn">PROCEED TO PAY</a>
                     </div>
                 </div>
             </div>
@@ -169,4 +169,70 @@
         })
     }
 </script>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+
+        document.getElementById("pay").onclick = function (e) {
+
+            e.preventDefault();
+            var amt = $("#amt").html()
+            // alert(amt)
+           
+            $.get('payment', { amt }, function (rt) {
+
+                var options = {
+                    "key": "rzp_test_RZXKBwmotI55aB", // Enter the Key ID generated from the Dashboard
+                    "amount": rt.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                    "currency": "INR",
+                    "name": "Tops tech Corp",
+                    "description": "Test Transaction",
+                    "image": "https://example.com/your_logo",
+                    "order_id": rt.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                    "handler": function (response) {
+                        
+                        // alert(response.razorpay_payment_id);
+                        // alert(response.razorpay_order_id);
+                        // alert(response.razorpay_signature)
+
+                        $.get('makeorder',{"rid":rt.receipt,"payid":response.razorpay_payment_id,
+                            "oid":response.razorpay_order_id,total:rt.amount
+                        },function(rt){
+                            alert(rt)
+                            location.reload()
+                            
+                        })
+                    },
+                    "prefill": {
+                        "name": "Gaurav Kumar",
+                        "email": "gaurav.kumar@example.com",
+                        "contact": "9000090000"
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
+                var rzp1 = new Razorpay(options);
+                rzp1.on('payment.failed', function (response) {
+                    alert(response.error.code);
+                    alert(response.error.description);
+                    alert(response.error.source);
+                    alert(response.error.step);
+                    alert(response.error.reason);
+                    alert(response.error.metadata.order_id);
+                    alert(response.error.metadata.payment_id);
+                });
+
+                rzp1.open();
+            })
+
+
+
+
+        }
+    </script>
+
  {%endblock%}
