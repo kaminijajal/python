@@ -9,6 +9,7 @@ from datetime import datetime
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
+import random
 
 # Create your views here.
 
@@ -157,16 +158,17 @@ def makeorder(request):
         orderid=oid,
         date = datetime.now()
     )
-
+    rows=""
     cartdata = Cart.objects.filter(user= request.user)
     for cart in cartdata:
         OrderDetails.objects.create(order=order,product=cart.product,qty=cart.qty,
         price=cart.product.peice)
+        rows+= f"<tr><td align='center'>{cart.product.id}</td><td align='center'>{cart.product.name}</td><td align='center'>{cart.qty}</td><td align='center'>{cart.product.peice}</td><td align='center'>{cart.subtotal()}</td></tr>"
         cart.delete()
 
     subject = "Oreder Confimation"
     message = "Your order is confirmed !!!"
-    html_content="<h1>hello</h1>"
+    html_content=f"<table border='1' text-align='center'><thead><tr><th>Order Id : {order.orderid}</th><th>Date : {order.date}</th><th rowspan='2' colspan='3'>Total : {order.total}</th></tr><tr><th>Pay Id : {order.paymentid}</th><th>Receipt Id : {order.receiptid}</th></tr><tr><th>ID</th><th>Product</th><th>Qty</th><th>price</th><th>Subtotal</th></tr></thead><tbody>{rows}</tbody></table>"
     context = {}
 
     try:
@@ -188,3 +190,47 @@ def makeorder(request):
 #         total += int(item['peice']) * int(item['qty'])
 
 #     return JsonResponse({'total': total})
+def forgotpassword(request):
+    if request.method=='POST':
+        email = request.POST['email']
+        u = User.objects.filter(email=email)
+        # print(len(u))
+        if len(u)<=0:
+            return render(request,"forgot.html",{"err":"User not found"})
+        else:
+            r = random.randint(1000,9999)
+            request.session['otp'] = r
+            request.session['email'] = email
+            # print(r)
+            try:
+                send_mail("Forgot Password recovery",f"Your OTP is {r}",settings.EMAIL_HOST_USER,[email])
+                return render(request,"otpverify.html")
+            except Exception as e:
+                return render(request,"forgot.html",{"err":"Somthing Went Wrong"})
+    return render(request,"forgot.html")
+
+def verifyotp(request):
+    sotp = int(request.session.get('otp'))
+    email = request.session.get('email')
+    if request.method == 'POST':
+        otp = int(request.POST['otp'])
+        print(otp,sotp)
+        if otp == sotp:
+            return render(request,"newpassword.html")
+        else:
+            return render(request,"otpverify.html",{"err":"Invalid OTP"})
+        
+def changepassword(request):
+    email = request.session.get('email')
+    if request.method == 'POST':
+        password = request.POST['pass']
+        cpassword = request.POST['cpass']
+
+        if password!=cpassword:
+            return render(request,"newpassword.html",{"err":"confirm password not match with password"})
+        else:
+            u = User.objects.get(email=email)
+            # print(u[0])
+            u.set_password(password)
+            u.save()
+            return render(request,"login.html")

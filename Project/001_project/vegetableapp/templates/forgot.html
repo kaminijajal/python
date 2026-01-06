@@ -1,0 +1,32 @@
+{%extends 'base.html'%}
+{%block title%}Ogani | Login{%endblock%}
+{%block content%}
+
+
+
+<!-- From -->
+  <div class="container"> 
+    <div class="row">
+      <div class="col-6">
+    
+      <div >
+        <h2> Password Recovery</h2><br>
+        <p style="color:red;">{{ err }}</p>
+        <form action="" method="POST"  class="form grid">
+          {% csrf_token %}
+          <input type="text" placeholder="Enter You Email" name="email" class="form-control">
+          <br>
+          
+          <br>
+          <button class="primary-btn" type="submit">Send OTP</button><br>
+          <br>
+        </form>
+      </div></div>
+
+</div>
+  </div> 
+
+
+
+
+{%endblock%}

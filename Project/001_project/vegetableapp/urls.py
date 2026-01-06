@@ -28,6 +28,9 @@ urlpatterns = [
     path('makeorder',makeorder,name="makeorder"),
 
     # path('cart-total/',cart_total, name='cart_total'),
+    path("forgotpassword",forgotpassword,name='forgotpassword'),
+    path("verifyotp",verifyotp,name="verifyotp"),
+    path("changepassword",changepassword,name="changepassword")
 
 
 ]

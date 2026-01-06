@@ -1,0 +1,32 @@
+{%extends 'base.html'%}
+{%block title%}Ogani | Login{%endblock%}
+{%block content%}
+
+
+
+<!-- From -->
+  <div class="container"> 
+    <div class="row">
+      <div class="col-6">
+    
+      <div >
+        <h2> OTP Verification</h2><br>
+        <p style="color:red;">{{ err }}</p>
+        <form action="{%url 'verifyotp'%}" method="POST"  class="form grid">
+          {% csrf_token %}
+          <input type="text" placeholder="Enter OTP " name="otp" class="form-control">
+          <br>
+          
+          <br>
+          <button class="primary-btn" type="submit"> Verify</button><br>
+          <br>
+        </form>
+      </div></div>
+
+</div>
+  </div> 
+
+
+
+
+{%endblock%}
