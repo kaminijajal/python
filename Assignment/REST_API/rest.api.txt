@@ -1,0 +1,1109 @@
+1) What is an API (Application Programming Interface)?
+->An API (Application Programming Interface) is essentially a set of rules and tools that allows different software applications to communicate with each other. It acts as a bridge between different programs, letting them exchange data and use each other’s functionality without needing to know how the other program is implemented.
+
+Here’s a breakdown:
+
+1=>Interface – Think of it like a menu at a restaurant. The menu tells you what you can order, but you don’t need to know how the chef prepares the food. Similarly, an API shows what operations you can perform, without exposing the internal code.
+
+2=>Requests and Responses – Most APIs work by sending a request to another system and receiving a response. For example, a weather app can request the current weather from a weather service API, and the API responds with the data.
+
+3=>**Types of APIs
+
+2)Types of APIs: REST, SOAP.
+->REST APIUses HTTP requests (GET, POST, PUT, DELETE).
+Data usually in JSON format.
+Lightweight and easy to use.
+
+Example: GET /users/1
+
+->SOAP API
+Uses XML for messages.
+More strict and formal (has a standard protocol).
+Built-in error handling and security.
+
+Example: <soap:Envelope>...</soap:Envelope>
+->In short: REST = simple & fast, SOAP = strict & feature-rich.
+
+3)Why are APIs important in web development?
+->APIs are important in web development because they allow different applications, services, or systems to communicate and share data easily. They make web apps more flexible, let developers reuse functionality instead of building everything from scratch, and enable features like login with Google, payment processing, or fetching data from a server.
+
+In short: APIs make development faster, more efficient, and connected.
+
+4)Understanding project requirements.
+->Understanding project requirements is the process of gathering and analyzing all the information about a project to know exactly what the client or stakeholders want, what the goals are, and what constraints or limitations exist.
+
+->In simple terms, it’s figuring out what the project should do and how it should work before you start building it.
+
+5)Setting up the environment and installing necessary packages.
+->install python
+python --version
+python3 --version
+
+->Create a Virtual Environment
+# Navigate to your project folder
+cd path/to/your/project
+
+# Create a virtual environment
+python -m venv venv
+
+# Activate it:
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+
+->Upgrade pip
+pip install --upgrade pip
+
+->Install Necessary Packages
+pip install django djangorestframework
+
+-># MySQL
+pip install mysqlclient
+
+# PostgreSQL
+pip install psycopg2-binary
+
+->pip install Pillow
+
+->pip install requests
+
+->Optional: Install Development Tools
+
+Black → Code formatter:
+pip install black
+
+isort → Sort imports:
+pip install isort
+
+django-cors-headers → If handling frontend API requests:
+pip install django-cors-headers
+
+->Check Installed Packages
+pip list
+
+->Start Django Project
+django-admin startproject myproject
+cd myproject
+python manage.py runserver
+
+6)What is Serialization?
+->Serialization is the process of converting complex data (like objects, Python dictionaries, or querysets) into a format that can be easily stored or transmitted, such as JSON or XML.
+
+In simple words:
+
+->Turning Python objects into a format that can be sent over the internet or saved to a file.
+->For example, in Django REST Framework:
+
+from rest_framework import serializers
+
+class ProductSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    price = serializers.FloatField()
+
+->Here, ProductSerializer converts a Product object into JSON so it can be sent to a client.
+->Serialization is basically “Python objects → JSON/XML for sharing.”
+
+7)Converting Django QuerySets to JSON.
+
+->1. Using values() + json.dumps:
+from django.http import JsonResponse
+from .models import Product
+
+def products_json(request):
+    qs = Product.objects.all().values()  # QuerySet as dict
+    return JsonResponse(list(qs), safe=False)  # Convert to list for JSON
+
+->2. Using Django serialize:
+from django.core.serializers import serialize
+from django.http import HttpResponse
+from .models import Product
+
+def products_json(request):
+    qs = Product.objects.all()
+    data = serialize('json', qs)
+    return HttpResponse(data, content_type='application/json')
+
+->JsonResponse is simpler for API responses.
+->serialize keeps model metadata (like pk, model name).
+
+8)Using serializers in Django REST Framework (DRF)
+->In Django REST Framework (DRF), serializers are used to convert complex data types like Django models into JSON (for API responses) and also to validate and convert incoming JSON into Python objects (for creating/updating models).
+
+->example
+from rest_framework import serializers
+from .models import Product
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product      # The model to serialize
+        fields = '__all__'   # Fields to include in API
+
+->->
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Product
+from .serializers import ProductSerializer
+
+@api_view(['GET'])
+def product_list(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)  # many=True for queryset
+    return Response(serializer.data)
+
+->ModelSerializer → automatically maps model fields.
+->serializer.data → returns JSON-friendly data.
+->serializer.is_valid() → checks incoming data.
+->serializer.save() → saves new/updated object to DB
+
+9)HTTP request methods (GET, POST, PUT, DELETE).
+->Here’s a simple explanation of HTTP request methods:
+->GET – Retrieve data from the server.
+->POST – Send new data to the server (create).
+->PUT – Update existing data on the server.
+->DELETE – Remove data from the server.
+
+10)Sending and receiving responsesin DRF.
+->1. Import
+
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
+
+->2. Send a Response
+@api_view(['GET'])
+def my_view(request):
+    data = {"message": "Hello, DRF!"}
+    return Response(data, status=status.HTTP_200_OK)
+
+->3. Receive Request Data
+
+@api_view(['POST'])
+def my_post_view(request):
+    received_data = request.data  # JSON data sent by client
+    name = received_data.get('name')
+    return Response({"you_sent": name}, status=status.HTTP_201_CREATED)
+
+11)Understanding views in DRF: Function-based views vs Class-based views.
+->1. Function-Based Views (FBV)
+
+-You write a Python function to handle requests.
+-Each HTTP method (GET, POST, PUT, DELETE) is handled inside the function.
+-Simple and easy for small APIs.
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+@api_view(['GET', 'POST'])
+def product_list(request):
+    if request.method == 'GET':
+        return Response({"message": "List of products"})
+    elif request.method == 'POST':
+        return Response({"message": "Product created"})
+
+2. Class-Based Views (CBV)
+
+-You write a Python class that inherits from DRF classes.
+-Each HTTP method is a separate method (get(), post(), etc.).
+-Supports mixins and generic views, so less code for common operations (CRUD).
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+class ProductList(APIView):
+    def get(self, request):
+        return Response({"message": "List of products"})
+
+    def post(self, request):
+        return Response({"message": "Product created"})
+
+
+12)Defining URLs and linking them to views.
+->1. views.py
+
+from django.http import HttpResponse
+
+def home(request):
+    return HttpResponse("Hello, this is the home page!")
+
+def about(request):
+    return HttpResponse("This is the about page!")
+
+->2.urls.py
+
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home, name='home'),      # URL: http://example.com/
+    path('about/', views.about, name='about'),  # URL: http://example.com/about/
+]
+
+13)Adding pagination to APIs to handle large data sets
+->1.Set pagination in settings.py:
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10  # Number of items per page
+}
+
+->2. API view automatically supports pagination:
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import Product
+from .serializers import ProductSerializer
+from rest_framework.pagination import PageNumberPagination
+
+class ProductList(APIView):
+    def get(self, request):
+        products = Product.objects.all()
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        result = paginator.paginate_queryset(products, request)
+        serializer = ProductSerializer(result, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+How it works:
+
+-Request first page: /api/products/?page=1
+-Request second page: /api/products/?page=2
+
+14)Configuring Django settings for database,static files, and API keys.
+->Database (in settings.py)
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',  # or 'django.db.backends.sqlite3'
+        'NAME': 'your_db_name',
+        'USER': 'your_db_user',
+        'PASSWORD': 'your_db_password',
+        'HOST': 'localhost',  # or your DB host
+        'PORT': '5432',       # default for PostgreSQL
+    }
+}
+
+->Static & Media Files
+# Static files (CSS, JS, images)
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]  # optional, for extra static folders
+STATIC_ROOT = BASE_DIR / "staticfiles"    # where collectstatic will gather files
+
+# Media files (user uploaded)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / "media"
+
+->API Keys (keep secret!)
+# In settings.py
+import os
+
+API_KEY = os.environ.get('API_KEY', 'your-default-key')  # load from environment variable
+
+15)Setting up a Django REST Framework project.
+->Install Python & pip
+python --version
+pip --version
+
+->Create a virtual environment
+python -m venv myenv
+
+->Windows: myenv\Scripts\activate
+->Install Django & DRF
+pip install django djangorestframework
+
+->Create Django project
+django-admin startproject myproject
+cd myproject
+
+->Create Django app
+python manage.py startapp myapp
+
+->Add apps to settings.py
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    ...
+    'rest_framework',
+    'myapp',
+]
+
+->Create a model (example)
+from django.db import models
+
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.FloatField()
+    qty = models.IntegerField()
+
+->Make migrations
+python manage.py makemigrations
+python manage.py migrate
+
+->Create serializer
+from rest_framework import serializers
+from .models import Product
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+->Create API view
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Product
+from .serializers import ProductSerializer
+
+@api_view(['GET'])
+def product_list(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+->Setup URL
+->app url
+from django.urls import path
+from .views import product_list
+
+urlpatterns = [
+    path('products/', product_list),
+]
+->project url
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include('myapp.urls')),
+]
+
+16)Implementing social authentication (e.g., Google, Facebook) in Django.
+->1. Install dependencies
+pip install django-allauth
+
+->2. Update settings.py
+INSTALLED_APPS = [
+    # default apps
+    'django.contrib.sites',
+    'django.contrib.auth',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+    # allauth apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',   # for Google
+    'allauth.socialaccount.providers.facebook', # for Facebook
+]
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # default
+    'allauth.account.auth_backends.AuthenticationBackend',  # allauth
+)
+
+LOGIN_REDIRECT_URL = '/'  # redirect after login
+
+->3. Update urls.py
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),  # allauth urls
+]
+
+4. Configure Social Apps in Django Admin
+
+-Go to Django Admin → Social Applications → Add Social Application.
+-Select provider (Google/Facebook), add Client ID and Secret Key from the respective platform.
+-Assign the app to your site (Site ID 1).
+
+->5. Add login buttons in templates
+<a href="{% provider_login_url 'google' %}">Login with Google</a>
+<a href="{% provider_login_url 'facebook' %}">Login with Facebook</a>
+
+17)Sending emails and OTPs using third-party APIslike Twilio, SendGrid.
+->Sending Emails with SendGrid
+
+Step 1: Create SendGrid account
+
+Sign up at SendGrid
+ and get your API key.
+
+Step 2: Install SendGrid Python library
+pip install sendgrid
+
+Step 3: Send an email
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
+def send_email(to_email, subject, content):
+    message = Mail(
+        from_email='your_email@example.com',
+        to_emails=to_email,
+        subject=subject,
+        plain_text_content=content
+    )
+    try:
+        sg = SendGridAPIClient('YOUR_SENDGRID_API_KEY')
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+    except Exception as e:
+        print(e)
+
+# Example usage
+send_email("user@example.com", "Test Email", "Hello, this is a test email!")
+
+->Sending OTPs via SMS with Twilio
+
+Step 1: Create Twilio account
+
+Sign up at Twilio
+, get Account SID, Auth Token, and a Twilio phone number.
+
+Step 2: Install Twilio library
+pip install twilio
+
+Step 3: Send OTP
+from twilio.rest import Client
+import random
+
+def send_otp(to_number):
+    otp = random.randint(100000, 999999)  # Generate 6-digit OTP
+    account_sid = 'YOUR_TWILIO_ACCOUNT_SID'
+    auth_token = 'YOUR_TWILIO_AUTH_TOKEN'
+    client = Client(account_sid, auth_token)
+
+    message = client.messages.create(
+        body=f"Your OTP is {otp}",
+        from_='+1234567890',  # Twilio number
+        to=to_number
+    )
+    print(f"OTP sent: {otp}")
+    print(message.sid)
+    return otp
+
+# Example usage
+send_otp('+911234567890')
+
+Tips:
+Keep API keys secret (use environment variables).
+For production, store OTPs temporarily in DB or cache to verify.
+SendGrid supports HTML emails too.
+Twilio allows WhatsApp OTPs as well.
+
+18)Design a REST API for managing doctor profiles using Django REST Framework.
+
+->Step 1: Create a Django Project & App
+django-admin startproject hospital
+cd hospital
+python manage.py startapp doctors
+
+->Step 2: Add Apps to settings.py
+INSTALLED_APPS = [
+    ...,
+    'rest_framework',
+    'doctors',
+]
+
+->INSTALLED_APPS = [
+    ...,
+    'rest_framework',
+    'doctors',
+]
+
+->Step 3: Create Doctor Model (doctors/models.py)
+from django.db import models
+
+class Doctor(models.Model):
+    name = models.CharField(max_length=100)
+    specialization = models.CharField(max_length=100)
+    phone = models.CharField(max_length=15)
+    email = models.EmailField(unique=True)
+
+    def __str__(self):
+        return self.name
+
+->Step 4: Create Serializer (doctors/serializers.py)
+from rest_framework import serializers
+from .models import Doctor
+
+class DoctorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Doctor
+        fields = '__all__'
+
+->Step 5: Create Views (doctors/views.py)
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Doctor
+from .serializers import DoctorSerializer
+
+# List all doctors / Add new doctor
+@api_view(['GET', 'POST'])
+def doctor_list(request):
+    if request.method == 'GET':
+        doctors = Doctor.objects.all()
+        serializer = DoctorSerializer(doctors, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = DoctorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# Get, Update, Delete doctor by ID
+@api_view(['GET', 'PUT', 'DELETE'])
+def doctor_detail(request, pk):
+    try:
+        doctor = Doctor.objects.get(pk=pk)
+    except Doctor.DoesNotExist:
+        return Response({"error": "Doctor not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = DoctorSerializer(doctor)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = DoctorSerializer(doctor, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        doctor.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+->Step 6: Add URLs (doctors/urls.py)
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('doctors/', views.doctor_list),
+    path('doctors/<int:pk>/', views.doctor_detail),
+]
+
+->And include it in the main urls.py:
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include('doctors.urls')),
+]
+
+->Step 7: Run Migrations
+python manage.py makemigrations
+python manage.py migrate
+
+Step 8: Test API
+
+GET /api/doctors/ → List all doctors
+POST /api/doctors/ → Add a doctor
+GET /api/doctors/<id>/ → Get doctor by ID
+PUT /api/doctors/<id>/ → Update doctor
+DELETE /api/doctors/<id>/ → Delete doctor
+
+19)What is CRUD, and why is it fundamental to backend development?
+->CRUD stands for Create, Read, Update, Delete.
+->Create → Add new data
+->Read → Get or view data
+->Update → Modify existing data
+->elete → Remove data
+->It’s fundamental to backend development because most applications need to store, retrieve, change, and remove data, so CRUD forms the basic operations for interacting with databases.
+
+20)Difference between authentication and authorization.
+->Authentication = "Who are you?" 
+    It checks identity.
+    Example: Logging in with username and password.
+
+->Authorization = "What can you do?" 
+    It checks permissions.
+    Example: Admin can delete users, regular user cannot.
+
+->In short: Authentication = verify identity, Authorization = verify access.
+
+21)Implementing authentication using Django REST Framework’s token-based system
+->Step 1: Install Django REST Framework
+pip install djangorestframework
+
+->Step 2: Add to INSTALLED_APPS
+INSTALLED_APPS = [
+    ...
+    'rest_framework',
+    'rest_framework.authtoken',  # required for token auth
+]
+
+->Step 3: Run Migrations
+python manage.py migrate
+
+Step 4: Configure DRF Default Authentication / settings.py
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+->Step 5: Create Token for Users
+
+You can generate tokens automatically or manually:
+Option 1: Automatically on user creation
+from django.conf import settings
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=User)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+
+Option 2: Manually via shell
+python manage.py shell
+
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User
+
+user = User.objects.get(username='yourusername')
+token = Token.objects.create(user=user)
+print(token.key)
+
+Step 6: Create Login Endpoint to Get Token
+
+In urls.py:
+from django.urls import path
+from rest_framework.authtoken.views import obtain_auth_token
+
+urlpatterns = [
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+]
+
+Step 7: Use Token for API Requests
+
+Include the token in the header of your API request:
+
+Authorization: Token <your_token_here>
+
+22)Introduction to OpenWeatherMap API and how to retrieve weather data.
+
+->Sign up and get an API key
+Go to OpenWeatherMap
+ and create a free account.
+Get your unique API key.
+
+->Make an API request
+xample URL for current weather by city:
+http://api.openweathermap.org/data/2.5/weather?q=London&appid=YOUR_API_KEY
+eplace London with any city and YOUR_API_KEY with your key.
+
+->Read the response
+The API returns data in JSON format.
+Example fields: temperature, humidity, weather description.
+
+->Optional: Convert units
+By default, temperature is in Kelvin.
+You can add &units=metric for Celsius or &units=imperial for Fahrenheit.
+
+import requests
+
+api_key = "YOUR_API_KEY"
+city = "London"
+url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid={api_key}"
+
+response = requests.get(url)
+data = response.json()
+
+print(f"City: {data['name']}")
+print(f"Temperature: {data['main']['temp']}°C")
+print(f"Weather: {data['weather'][0]['description']}")
+
+23)Using Google Maps Geocoding API to convert addresses into coordinates.
+->Get API Key:
+Go to Google Cloud Console, enable Geocoding API, and get your API key.
+
+->Send Request:
+Use the endpoint:
+
+https://maps.googleapis.com/maps/api/geocode/json?address=YOUR_ADDRESS&key=YOUR_API_KEY
+
+Example for "1600 Amphitheatre Parkway, Mountain View, CA":
+
+https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=YOUR_API_KEY
+
+->Get Coordinates:
+The response JSON contains:
+
+{
+  "results": [
+    {
+      "geometry": {
+        "location": {
+          "lat": 37.4224764,
+          "lng": -122.0842499
+        }
+      }
+    }
+  ]
+}
+
+->Optional Python Example:
+
+import requests
+
+address = "1600 Amphitheatre Parkway, Mountain View, CA"
+api_key = "YOUR_API_KEY"
+url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={api_key}"
+
+response = requests.get(url).json()
+location = response['results'][0]['geometry']['location']
+print("Latitude:", location['lat'])
+print("Longitude:", location['lng'])
+
+24)Introduction to GitHub API and how to interact with repositories, pull requests, and issues.
+->What you can do with GitHub API
+Get repository details
+Create, view, and manage issues
+Create and review pull requests
+List commits, branches, contributors
+
+->Authentication
+Use a Personal Access Token (PAT) in the request header:
+
+Authorization: token YOUR_GITHUB_TOKEN
+
+->Interacting with Repositories
+Get repository info
+
+GET https://api.github.com/repos/username/repo-name
+GET https://api.github.com/users/username/repos
+
+->Working with Issues
+Get issues
+
+GET https://api.github.com/repos/username/repo-name/issues
+
+Create an 
+
+POST https://api.github.com/repos/username/repo-name/issues
+
+{
+  "title": "Bug found",
+  "body": "App crashes on login"
+}
+
+->Working with Pull Requests
+
+Get pull requests
+GET https://api.github.com/repos/username/repo-name/pulls
+
+Create a pull request
+POST https://api.github.com/repos/username/repo-name/pulls
+
+->Tools to use
+
+curl
+Python (requests)
+Postman
+
+25)Using Twitter API to fetch and post tweets, and retrieve user data.
+->Twitter API lets you:
+Fetch tweets (timeline, search, user tweets)
+Post tweets
+Get user data (name, username, followers, etc.)
+
+->Prerequisites (Required)
+Twitter/X Developer Account
+Create an App
+Get these credentials:
+    API Key
+    API Secret
+    Access Token
+    Access Token Secret
+
+->Install Library (Python)
+pip install tweepy
+
+->Authentication (Login to API)
+import tweepy
+
+api_key = "API_KEY"
+api_secret = "API_SECRET"
+access_token = "ACCESS_TOKEN"
+access_secret = "ACCESS_SECRET"
+
+auth = tweepy.OAuth1UserHandler(
+    api_key, api_secret,
+    access_token, access_secret
+)
+
+api = tweepy.API(auth)
+
+->Post a Tweet
+api.update_status("Hello Twitter API ")
+
+->Fetch Tweets (User Timeline)
+tweets = api.user_timeline(
+    screen_name="elonmusk",
+    count=5,
+    tweet_mode="extended"
+)
+
+for tweet in tweets:
+    print(tweet.full_text)
+
+26)Using email sending APIs like SendGrid and Mailchimp to send transactional emails.
+->Transactional emails are automatic, event-based emails, like:
+Account verification / OTP
+Password reset
+Order confirmation
+Payment receipt
+Shipping updates
+
+->SendGrid
+
+How it works
+Create a SendGrid account
+Generate an API Key
+Call SendGrid’s REST API from your backend
+Email is sent instantly
+
+Your App → SendGrid API → Recipient Inbox
+
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
+message = Mail(
+    from_email='noreply@yourapp.com',
+    to_emails='user@gmail.com',
+    subject='Order Confirmation',
+    html_content='<h3>Your order was placed successfully!</h3>'
+)
+
+try:
+    sg = SendGridAPIClient('SENDGRID_API_KEY')
+    response = sg.send(message)
+    print(response.status_code)
+except Exception as e:
+    print(e)
+
+->Mailchimp – Transactional via Mandrill
+Mailchimp itself is marketing-focused, but transactional emails are sent using Mandrill (Mailchimp Transactional).
+
+Create Mailchimp account
+Enable Mailchimp Transactional (Mandrill)
+Get API Key
+Use Mandrill API to send emails
+
+Your App → Mandrill API → Recipient Inbox
+
+import mailchimp_transactional as MailchimpTransactional
+
+client = MailchimpTransactional.Client('MAILCHIMP_API_KEY')
+
+message = {
+    "from_email": "noreply@yourapp.com",
+    "subject": "Password Reset",
+    "html": "<p>Click here to reset your password</p>",
+    "to": [{"email": "user@gmail.com", "type": "to"}]
+}
+
+response = client.messages.send({"message": message})
+print(response)
+
+27)Introduction to Twilio API forsending SMS and OTPs
+->Install Twilio SDK
+pip install twilio
+
+->Send SMS
+
+from twilio.rest import Client
+
+account_sid = "YOUR_ACCOUNT_SID"
+auth_token = "YOUR_AUTH_TOKEN"
+
+client = Client(account_sid, auth_token)
+
+message = client.messages.create(
+    body="Hello! This is a test SMS from Twilio 🚀",
+    from_="+1234567890",   # Twilio number
+    to="+91XXXXXXXXXX"     # Receiver number
+)
+
+print(message.sid)
+
+->Sending OTP using Twilio
+Automatic OTP generation
+Expiry handling
+Retry protection
+Less security risk
+
+->Step 1: Create Verify Service
+VAxxxxxxxxxxxxxxxxxxxx
+
+->Step 2: Send OTP
+from twilio.rest import Client
+
+client = Client(account_sid, auth_token)
+
+verification = client.verify.v2.services("SERVICE_SID") \
+    .verifications \
+    .create(to="+91XXXXXXXXXX", channel="sms")
+
+print(verification.status)
+
+->Step 3: Verify OTP
+verification_check = client.verify.v2.services("SERVICE_SID") \
+    .verification_checks \
+    .create(to="+91XXXXXXXXXX", code="123456")
+
+print(verification_check.status)
+
+28)Introduction to integrating payment gateways like PayPal and Stripe.
+->A payment gateway is a service that lets websites accept online payments securely.
+->PayPal and Stripe are popular payment gateways.
+    PayPal: Users can pay using PayPal balance or cards. Easy to use and trusted.
+    Stripe: Allows card payments, UPI, and wallets. More flexible for developers.
+
+->Both work by:
+1.Customer enters payment details
+2.Gateway processes the payment securely
+3.Payment is approved or declined
+4.Website gets confirmation
+
+->They provide test mode, security, and easy APIs so developers can integrate payments without handling sensitive card data.
+
+29)Using Google Maps API to display maps and calculate distances between locations.
+->Get Google Maps API Key
+1.Go to Google Cloud Console
+2.Create a project
+3.Enable these APIs:
+    Maps JavaScript API
+    Distance Matrix API (for distance calculation)
+4.Create an API Key
+
+->Display Google Map (HTML + JS)
+Basic Map Example
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Map</title>
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<h3>My Google Map</h3>
+<div id="map"></div>
+
+<script>
+function initMap() {
+  const location = { lat: 28.6139, lng: 77.2090 }; // Delhi
+
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 10,
+    center: location,
+  });
+
+  new google.maps.Marker({
+    position: location,
+    map: map,
+    title: "Delhi",
+  });
+}
+</script>
+
+<script async
+  src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+</script>
+
+</body>
+</html>
+
+->Calculate Distance Between Two Locations (JavaScript)
+<script>
+function calculateDistance() {
+  const service = new google.maps.DistanceMatrixService();
+
+  service.getDistanceMatrix(
+    {
+      origins: ["Delhi, India"],
+      destinations: ["Mumbai, India"],
+      travelMode: google.maps.TravelMode.DRIVING,
+      unitSystem: google.maps.UnitSystem.METRIC,
+    },
+    (response, status) => {
+      if (status === "OK") {
+        const distance =
+          response.rows[0].elements[0].distance.text;
+        const duration =
+          response.rows[0].elements[0].duration.text;
+
+        console.log("Distance:", distance);
+        console.log("Duration:", duration);
+      }
+    }
+  );
+}
+</script>
+
+
+->Calculate Distance Using Coordinates
+origins: [{ lat: 28.6139, lng: 77.2090 }],
+destinations: [{ lat: 19.0760, lng: 72.8777 }]
+
+->ackend Distance Calculation (Optional – Django / Python)
+import requests
+
+url = "https://maps.googleapis.com/maps/api/distancematrix/json"
+params = {
+    "origins": "Delhi,India",
+    "destinations": "Mumbai,India",
+    "key": "YOUR_API_KEY"
+}
+
+response = requests.get(url, params=params)
+data = response.json()
+
+distance = data["rows"][0]["elements"][0]["distance"]["text"]
+print(distance)
+
+->Common Use Cases
+
+Food delivery apps
+Cab booking
+Store locator
+Route optimization
+Distance-based pricing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

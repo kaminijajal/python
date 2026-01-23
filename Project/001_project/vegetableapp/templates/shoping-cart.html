@@ -163,7 +163,7 @@
     }
 
     function changeqty(qty,cartid){
-        // alert(qty+" "+cid)
+        // alert(qty+" "+cartid)
         $.get('changeqty',{cartid,qty},function(rt){
             location.reload()
         })
