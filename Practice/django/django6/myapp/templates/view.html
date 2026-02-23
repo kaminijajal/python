@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View All Data</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header text-center fw-bold">
+            User Data
+        </div>
+
+        <div class="card-body">
+                        {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+           
+        </div>
+    {% endfor %}
+{% endif %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Age</th>
+                            <th>Image</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <!-- Static Row 1 -->
+                    {%for std in students%}
+                        <tr>
+                            <td>{{std.id}}</td>
+                            <td>{{std.name}}</td>
+                            <td>{{std.email}}</td>
+                            <td>{{std.phone}}</td>
+                            <td>{{std.image}}</td>
+                            <td>
+                                <img src="media/{{std.image}}" class="rounded" width="100px" height="100px">
+                            </td>
+                            <td>
+                                <a href="{%url 'update'%}?sid={{std.id}}" class="btn btn-sm btn-warning me-1">
+                                    Edit
+                                </a>
+                                
+                                <a href="{%url 'delete'%}?sid={{std.id}}" class="btn btn-sm btn-danger">
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Back Button -->
+            <div class="text-center mt-3">
+                <a href="{%url 'index'%}" class="btn btn-secondary">
+                    Back to Create Form
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

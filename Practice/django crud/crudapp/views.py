@@ -13,7 +13,7 @@ def reg(request):
        phone = data.get('phone')
        age = data.get('age')
        img = request.FILES['img']
-    #   print(name,email,phone,age)
+       print(name,email,phone,age)
 
     Student.objects.create(name=name,email=email,phone=phone,age=age,image=img)
     

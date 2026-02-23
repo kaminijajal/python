@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form & Table</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .btn-custom:hover {
+            transform: scale(1.05);
+            transition: 0.3s;
+        }
+        img {
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <!-- FORM -->
+    <div class="card shadow p-4">
+        <h3 class="text-center mb-4">Registration Form</h3>
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+        <!-- <span class="text-success">{{msg}}</span> -->
+        <form method="post" enctype="multipart/form-data" action="{%url 'insert'%}">
+            {%csrf_token%}
+            <div class="row mb-3">
+                <!-- <div class="col-md-6">
+                    <input type="text" class="form-control" id="id" name="id" placeholder="">
+                </div> -->
+
+                <div class="col-md-6">
+                    <label>Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter name">
+                </div>
+
+                <div class="col-md-6">
+                    <label>Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>Password</label>
+                    <input type="password" class="form-control" id="pass" name="pass" placeholder="Enter password">
+                </div>
+
+                <div class="col-md-6">
+                    <label>Age</label>
+                    <input type="number" class="form-control" id="age" name="age" placeholder="Enter age">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>City</label>
+                    <select class="form-select" name="city" id="city">
+                        <option>Select City</option>
+                        <option>Ahmedabad</option>
+                        <option>Surat</option>
+                        <option>Vadodara</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label>Gender</label><br>
+                <input type="radio" name="gender" id="male" value="male"> Male
+                <input type="radio" name="gender" id="female" value="female" class="ms-3"> Female
+            </div>
+
+            <div class="mb-3">
+                <label>Hobbies</label><br>
+                <input type="checkbox" id="reading" name="hobbies" value="reading" > Reading
+                <input type="checkbox" id="music" name="hobbies" value="music"class="ms-3"> Music
+                <input type="checkbox" id="sports" name="hobbies" value="sports" class="ms-3"> Sports
+            </div>
+
+            <div class="mb-3">
+                <label>Address</label>
+                <textarea class="form-control" rows="3" id="address" name="address"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label>Image</label>
+                <input type="file" class="form-control" name="image" id="image">
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-success btn-custom">Submit</button>
+                <button type="reset" class="btn btn-secondary btn-custom ms-2">Reset</button>
+            </div>
+            <div class="text-center">
+                <a href="{%url 'display'%}">View all Students</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- TABLE -->
+   
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Student</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .btn-custom:hover {
+            transform: scale(1.05);
+            transition: 0.3s;
+        }
+        img {
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <!-- UPDATE FORM -->
+    <div class="card shadow p-4">
+        <h3 class="text-center mb-4">Update Student</h3>
+
+        <form method="post" action="{%url 'update'%}" enctype="multipart/form-data ">
+            {% csrf_token %}
+
+            <!-- ID FIELD -->
+            <div class="mb-3">
+                <!-- <label>ID</label> -->
+                <input type="text" class="form-control"  value="{{ std.id }}" readonly>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>Name</label>
+                    <input type="text" class="form-control" name="name" value="{{ std.name }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label>Email</label>
+                    <input type="email" class="form-control" name="email" value="{{ std.email }}">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>Password</label>
+                    <input type="text" class="form-control" name="pass" value="{{ std.password }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label>Age</label>
+                    <input type="number" class="form-control" name="age" value="{{ std.age }}">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label>City</label>
+                <select class="form-select" name="city">
+                    <option>{{ std.city }}</option>
+                    <option>Ahmedabad</option>
+                    <option>Surat</option>
+                    <option>Vadodara</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label>Gender</label><br>
+                <input type="radio" name="gender" value="male"
+                       {% if std.gender == "male" %}checked{% endif %}> Male
+
+                <input type="radio" name="gender" value="female" class="ms-3"
+                       {% if std.gender == "female" %}checked{% endif %}> Female
+            </div>
+
+            <div class="mb-3">
+                <label>Hobbies</label><br>
+                <input type="checkbox" name="hobbies" value="reading"
+                       {% if "reading" in std.hobbies %}checked{% endif %}> Reading
+
+                <input type="checkbox" name="hobbies" value="music" class="ms-3"
+                       {% if "music" in std.hobbies %}checked{% endif %}> Music
+
+                <input type="checkbox" name="hobbies" value="sports" class="ms-3"
+                       {% if "sports" in std.hobbies %}checked{% endif %}> Sports
+            </div>
+
+            <div class="mb-3">
+                <label>Address</label>
+                <textarea class="form-control" rows="3" name="address">{{ std.address }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label>Image</label><br>
+                <!-- <img src="" width="100" class="mb-2"><br> -->
+                <input type="file" class="form-control" name="image" id="image">
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-primary btn-custom">Update</button>
+                <a href="{% url 'display' %}" class="btn btn-success">
+    Back to Registration
+</a>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Product</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Add Product</h4>
+                </div>
+
+                 {% if messages %}
+    {% for msg in messages %}
+        <div class="alert alert-success alert-dismissible fade show">
+            {{ msg }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+                <div class="card-body">
+                    <form action="{%url 'add'%}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %} 
+                        
+                        {% if pro %}
+                            <input type="text" name="id" value="{{ pro.id }}">
+                        {% endif %}
+                        
+                        <!-- Name -->
+                        <div class="mb-3">
+                            <label class="form-label">Product Name</label>
+                            <input type="text" name="name" value="{{pro.name}}" class="form-control" placeholder="Enter product name">
+                        </div>
+
+                        <!-- Price -->
+                        <div class="mb-3">
+                            <label class="form-label">Price</label>
+                            <input type="number" name="price" value="{{pro.price}}" class="form-control" placeholder="Enter price">
+                        </div>
+
+                        <!-- Quantity -->
+                        <div class="mb-3">
+                            <label class="form-label">Quantity</label>
+                            <input type="number" name="qty" value="{{pro.qty}}" class="form-control" placeholder="Enter quantity">
+                        </div>
+
+                        <!-- Image -->
+                         <div class="mb-3">
+                             <img src="media/{{pro.image}}" alt="" srcset="" width="100px" width="100px">
+                         </div>
+                        <div class="mb-3">
+                           
+                            <label class="form-label">Product Image</label>
+                            <input type="file" name="image"class="form-control">
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">
+                                Submit
+                            </button>
+
+                            <a href="{%url 'display'%}" class="btn btn-outline-primary">
+                                View All Products
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
